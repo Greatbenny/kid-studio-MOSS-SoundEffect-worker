@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1 \
     HF_HOME=/runpod-volume/huggingface \
     HF_HUB_CACHE=/runpod-volume/huggingface/hub \
     TORCH_HOME=/runpod-volume/torch \
-    TMPDIR=/runpod-volume/tmp \
+    TMPDIR=/tmp \
     MODEL_ID=OpenMOSS-Team/MOSS-SoundEffect-v2.0 \
     TORCHDYNAMO_DISABLE=1
 
