@@ -1,0 +1,9 @@
+.git
+.github
+__pycache__
+*.pyc
+*.pyo
+*.wav
+*.flac
+*.mp3
+.env
