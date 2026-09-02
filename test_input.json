@@ -1,0 +1,10 @@
+{
+  "input": {
+    "operation": "generate",
+    "kind": "ambience",
+    "prompt": "Gentle morning forest ambience with soft birds, distant leaves rustling, and no music or speech.",
+    "duration_seconds": 8,
+    "quality": "cheap",
+    "seed": 42
+  }
+}
