@@ -10,23 +10,27 @@ ENV PYTHONUNBUFFERED=1 \
     TORCH_HOME=/runpod-volume/torch \
     TMPDIR=/tmp \
     MODEL_ID=OpenMOSS-Team/MOSS-SoundEffect-v2.0 \
-    TORCHDYNAMO_DISABLE=1
+    TORCHDYNAMO_DISABLE=1 \
+    VIRTUAL_ENV=/opt/moss-venv \
+    PATH=/opt/moss-venv/bin:$PATH
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl git ffmpeg libsndfile1 python3.12 python3.12-dev \
-    build-essential && \
-    curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 && \
+    ca-certificates git ffmpeg libsndfile1 python3.12 python3.12-dev \
+    python3.12-venv build-essential && \
+    python3.12 -m venv /opt/moss-venv && \
+    /opt/moss-venv/bin/python -m pip install --upgrade pip setuptools wheel && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
 RUN git clone https://github.com/OpenMOSS/MOSS-TTS.git && \
     cd MOSS-TTS && git checkout ${MOSS_TTS_COMMIT} && \
-    python3.12 -m pip install --extra-index-url https://download.pytorch.org/whl/cu128 \
+    /opt/moss-venv/bin/python -m pip install \
+      --extra-index-url https://download.pytorch.org/whl/cu128 \
       -e "./moss_soundeffect_v2[torch-cu128]" && \
-    python3.12 -m pip install "runpod>=1.7,<2"
+    /opt/moss-venv/bin/python -m pip install "runpod>=1.7,<2"
 
 WORKDIR /app
 COPY handler.py /app/handler.py
-RUN mkdir -p /runpod-volume/huggingface /runpod-volume/torch /runpod-volume/tmp
+RUN /opt/moss-venv/bin/python -m py_compile /app/handler.py
 
-CMD ["python3.12", "-u", "/app/handler.py"]
+CMD ["/opt/moss-venv/bin/python", "-u", "/app/handler.py"]
